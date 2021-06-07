@@ -91,8 +91,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-    	$user->destroy();
-        return redirect()->route('user.show');
+    	$user->delete();
+        return redirect()->route('user.index');
     }
 
     public function search()

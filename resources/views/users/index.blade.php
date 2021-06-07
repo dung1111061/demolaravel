@@ -11,6 +11,7 @@
 $heads = [
     'Name',
     'Email',
+    'Project',
     ['label' => 'Actions', 'no-export' => true, 'width' => 5],
 ];
 $config = [
@@ -18,12 +19,16 @@ $config = [
 ];
 @endphp
 
-<x-adminlte-datatable id="table1" :heads="$heads" :config="$config" head-theme="dark" striped hoverable bordered compressed>
+<x-adminlte-datatable id="table1" :heads="$heads" :config="$config" head-theme="dark"  hoverable bordered compressed>
     @foreach($users as $user)
-        <tr>
-                <td>{!! $user->name !!}</td>
-                <td>{!! $user->email !!}</td>
-                <td>
+        @php      
+            $span = $user->projects->count() > 1 ? $user->projects->count() : 1;
+        @endphp
+        <tr class="group">
+                <td rowspan='{{$span}}'>{!! $user->name !!}</td>
+                <td rowspan='{{$span}}'>{!! $user->email !!}</td>
+                <td > {{ $user->projects->first() ? $user->projects->first()->name : '' }} </td>
+                <td rowspan='{{$span}}'>
                     <nobr>    
                     <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">
                         <a href="{!! route('user.edit',[ 'user'=> $user->id ]) !!}"><i class="fa fa-lg fa-fw fa-pen"></i></a>
@@ -41,6 +46,11 @@ $config = [
                     </nobr>
                 </td>
         </tr>
+        @foreach($user->projects->slice(1) as $project)
+        <tr class="grouped">
+            <td>{!! $project->name !!}</td>
+        </tr>
+        @endforeach
     @endforeach
 </x-adminlte-datatable>
 @stop
